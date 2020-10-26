@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="HorizontalProgressChartView">
+        <attr name="horizontalBarColor" format="color|string" />
+        <attr name="horizontalBarBackgroundColor" format="color|string" />
+        <attr name="horizontalPercentage" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="RingProgressChartView">
+        <attr name="ringBarColor" format="color|string" />
+        <attr name="ringBackgroundColor" format="color|string" />
+        <attr name="ringPercentage" format="integer" />
+    </declare-styleable>
+</resources>
