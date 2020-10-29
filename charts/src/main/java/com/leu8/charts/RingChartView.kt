@@ -13,9 +13,10 @@ class RingProgressChartView(context: Context?): View(context) {
     private val paint: Paint = Paint()
     private val oval: RectF = RectF()
 
-    private var percentage: Int = 0
+    private var progressPercentage: Int = 50
     private var barColor: Int = 0
     private var barBackgroundColor: Int = 0
+    private var strokeWidth: Float = 0f
 
     constructor(context: Context, attrs: AttributeSet): this(context) {
         val attributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.RingProgressChartView)
@@ -44,10 +45,13 @@ class RingProgressChartView(context: Context?): View(context) {
             ContextCompat.getColor(context, barBackgroundColorId)
         }
 
-        percentage = attributes.getInteger(R.styleable.RingProgressChartView_ringPercentage, 0)
-        if (percentage > 100)
-            percentage = 100
+        progressPercentage = attributes.getInteger(R.styleable.RingProgressChartView_ringProgressPercentage, 50)
+        if (progressPercentage > 100)
+            progressPercentage = 100
 
+        strokeWidth = attributes.getDimension(R.styleable.RingProgressChartView_ringStrokeWidth, 30f)
+        if (strokeWidth < 3)
+            strokeWidth = 3f
         attributes.recycle()
     }
 
@@ -58,9 +62,9 @@ class RingProgressChartView(context: Context?): View(context) {
 
         val radius: Float
         radius = if (width > height) {
-            height / 2.2f
+            height / 2f - strokeWidth / 2
         } else {
-            width / 2.2f
+            width / 2f - strokeWidth / 2
         }
 
         path.addCircle(
@@ -74,6 +78,7 @@ class RingProgressChartView(context: Context?): View(context) {
         paint.style = Paint.Style.STROKE
         paint.isAntiAlias = true
         paint.strokeCap = Paint.Cap.ROUND
+        paint.strokeWidth = strokeWidth
 
         val centerX: Float
         val centerY: Float
@@ -85,8 +90,8 @@ class RingProgressChartView(context: Context?): View(context) {
         canvas.drawArc(oval, 0f, 360f, false, paint)
 
         paint.color = barColor
+        val angle = (this.progressPercentage * 360 / 100).toFloat()
 
-        val angle = (this.percentage * 360 / 100).toFloat()
         canvas.drawArc(oval, 270f, -angle, false, paint)
     }
 }

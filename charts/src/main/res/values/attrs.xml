@@ -3,12 +3,14 @@
     <declare-styleable name="HorizontalProgressChartView">
         <attr name="horizontalBarColor" format="color|string" />
         <attr name="horizontalBarBackgroundColor" format="color|string" />
-        <attr name="horizontalPercentage" format="integer" />
+        <attr name="horizontalProgressPercentage" format="integer" />
+        <attr name="horizontalStrokeWidth" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="RingProgressChartView">
         <attr name="ringBarColor" format="color|string" />
         <attr name="ringBackgroundColor" format="color|string" />
-        <attr name="ringPercentage" format="integer" />
+        <attr name="ringProgressPercentage" format="integer" />
+        <attr name="ringStrokeWidth" format="dimension" />
     </declare-styleable>
 </resources>

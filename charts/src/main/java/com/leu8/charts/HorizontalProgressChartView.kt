@@ -13,9 +13,10 @@ import androidx.core.content.ContextCompat
 class HorizontalProgressChartView(context: Context?): View(context) {
     private val paint: Paint = Paint()
 
-    private var percentage: Int = 0
+    private var progressPercentage: Int = 50
     private var barColor: Int = 0
     private var barBackgroundColor: Int = 0
+    private var strokeWidth: Float = 0f
 
     constructor(context: Context, attrs: AttributeSet): this(context) {
         val attributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.HorizontalProgressChartView)
@@ -44,9 +45,13 @@ class HorizontalProgressChartView(context: Context?): View(context) {
             ContextCompat.getColor(context, barBackgroundColorId)
         }
 
-        percentage = attributes.getInteger(R.styleable.HorizontalProgressChartView_horizontalPercentage, 0)
-        if (percentage > 100)
-            percentage = 100
+        progressPercentage = attributes.getInteger(R.styleable.HorizontalProgressChartView_horizontalProgressPercentage, 50)
+        if (progressPercentage > 100)
+            progressPercentage = 100
+
+        strokeWidth = attributes.getDimension(R.styleable.RingProgressChartView_ringStrokeWidth, 30f)
+        if (strokeWidth < 3)
+            strokeWidth = 3f
 
         attributes.recycle()
     }
@@ -56,7 +61,7 @@ class HorizontalProgressChartView(context: Context?): View(context) {
         val width = width.toFloat()
         val height = height.toFloat()
 
-        paint.strokeWidth = 35f
+        paint.strokeWidth = strokeWidth
         paint.style = Paint.Style.STROKE
         paint.isAntiAlias = true
         paint.strokeCap = Paint.Cap.ROUND
@@ -71,10 +76,10 @@ class HorizontalProgressChartView(context: Context?): View(context) {
         canvas.drawLine(rectStart, centerY, rectEnd, centerY, paint)
 
         val rectLength = rectEnd - rectStart
-        val progress = (this.percentage * rectLength / 100)
+        val progress = (this.progressPercentage * rectLength / 100)
 
         paint.color =  barColor
-        if (percentage > 1)
+        if (progressPercentage > 1)
             canvas.drawLine(rectStart, centerY, progress + rectStart, centerY, paint)
     }
 }
