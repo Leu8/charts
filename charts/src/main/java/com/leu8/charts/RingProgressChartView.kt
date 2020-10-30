@@ -8,22 +8,26 @@ import android.view.View
 import androidx.core.content.ContextCompat
 
 
-class RingProgressChartView(context: Context?): View(context) {
+class RingProgressChartView(context: Context): View(context) {
     private val path: Path = Path()
-    private val paint: Paint = Paint()
+    private val chartPaint: Paint = Paint()
+    private val textPaint = Paint()
     private val oval: RectF = RectF()
 
     private var progressPercentage: Int = 50
     private var barColor: Int = 0
     private var barBackgroundColor: Int = 0
     private var strokeWidth: Float = 0f
+    private var text: String = ""
+    private var textSize: Float = 30f
+    private var textColor: Int = 0
 
     constructor(context: Context, attrs: AttributeSet): this(context) {
         val attributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.RingProgressChartView)
 
-        val barColorId = attributes.getResourceId(R.styleable.HorizontalProgressChartView_horizontalBarColor, 0)
+        val barColorId = attributes.getResourceId(R.styleable.RingProgressChartView_ringBarColor, 0)
         barColor = if (barColorId == 0) {
-            val barColorString = attributes.getString(R.styleable.HorizontalProgressChartView_horizontalBarColor)
+            val barColorString = attributes.getString(R.styleable.RingProgressChartView_ringBarColor)
             if (barColorString.isNullOrEmpty()) {
                 ContextCompat.getColor(context, R.color.colorPrimary)
             } else {
@@ -33,9 +37,9 @@ class RingProgressChartView(context: Context?): View(context) {
             ContextCompat.getColor(context, barColorId)
         }
 
-        val barBackgroundColorId = attributes.getResourceId(R.styleable.HorizontalProgressChartView_horizontalBarBackgroundColor, 0)
+        val barBackgroundColorId = attributes.getResourceId(R.styleable.RingProgressChartView_ringBackgroundColor, 0)
         barBackgroundColor = if (barBackgroundColorId == 0) {
-            val barBackgroundColorString = attributes.getString(R.styleable.HorizontalProgressChartView_horizontalBarBackgroundColor)
+            val barBackgroundColorString = attributes.getString(R.styleable.RingProgressChartView_ringBackgroundColor)
             if (barBackgroundColorString.isNullOrEmpty()) {
                 ContextCompat.getColor(context, R.color.colorLightGray)
             } else {
@@ -52,6 +56,25 @@ class RingProgressChartView(context: Context?): View(context) {
         strokeWidth = attributes.getDimension(R.styleable.RingProgressChartView_ringStrokeWidth, 30f)
         if (strokeWidth < 3)
             strokeWidth = 3f
+
+        text = attributes.getString(R.styleable.RingProgressChartView_ringText)?: ""
+
+        textSize = attributes.getDimension(R.styleable.RingProgressChartView_ringTextSize, 30f)
+        if (textSize < 5)
+            textSize = 5f
+
+        val textColorId = attributes.getResourceId(R.styleable.RingProgressChartView_ringTextColor, 0)
+        textColor = if (textColorId == 0) {
+            val textColorString = attributes.getString(R.styleable.RingProgressChartView_ringTextColor)
+            if (textColorString.isNullOrEmpty()) {
+                ContextCompat.getColor(context, R.color.colorPrimary)
+            } else {
+                Color.parseColor(textColorString)
+            }
+        } else {
+            ContextCompat.getColor(context, textColorId)
+        }
+
         attributes.recycle()
     }
 
@@ -73,12 +96,11 @@ class RingProgressChartView(context: Context?): View(context) {
             Path.Direction.CW
         )
 
-        paint.color = barBackgroundColor
-        paint.strokeWidth = 35f
-        paint.style = Paint.Style.STROKE
-        paint.isAntiAlias = true
-        paint.strokeCap = Paint.Cap.ROUND
-        paint.strokeWidth = strokeWidth
+        chartPaint.color = barBackgroundColor
+        chartPaint.strokeWidth = strokeWidth
+        chartPaint.style = Paint.Style.STROKE
+        chartPaint.isAntiAlias = true
+        chartPaint.strokeCap = Paint.Cap.ROUND
 
         val centerX: Float
         val centerY: Float
@@ -87,11 +109,19 @@ class RingProgressChartView(context: Context?): View(context) {
 
         oval[centerX - radius, centerY - radius, centerX + radius] = centerY + radius
 
-        canvas.drawArc(oval, 0f, 360f, false, paint)
+        canvas.drawArc(oval, 0f, 360f, false, chartPaint)
 
-        paint.color = barColor
+        textPaint.textSize = textSize
+        textPaint.textAlign = Paint.Align.CENTER
+        textPaint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        textPaint.color = textColor
+        textPaint.style = Paint.Style.FILL_AND_STROKE
+        textPaint.isAntiAlias = true
+        canvas.drawText(text, centerX, centerY + height / 15, textPaint)
+
+        chartPaint.color = barColor
+
         val angle = (this.progressPercentage * 360 / 100).toFloat()
-
-        canvas.drawArc(oval, 270f, -angle, false, paint)
+        canvas.drawArc(oval, 270f, -angle, false, chartPaint)
     }
 }

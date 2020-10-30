@@ -12,5 +12,8 @@
         <attr name="ringBackgroundColor" format="color|string" />
         <attr name="ringProgressPercentage" format="integer" />
         <attr name="ringStrokeWidth" format="dimension" />
+        <attr name="ringText" format="string" />
+        <attr name="ringTextSize" format="dimension" />
+        <attr name="ringTextColor" format="color|string" />
     </declare-styleable>
 </resources>
